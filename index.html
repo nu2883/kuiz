@@ -60,7 +60,7 @@
         text-align: center;
       }
       .options button {
-        color: white !important;
+        color: white ;
         width: 100%;
         margin: 5px 0;
         border-radius: 8px;
@@ -72,9 +72,9 @@
       }
       .correct {
         background-color: rgb(16, 247, 16) !important;
-        color: rgb(236, 4, 15) !important;
+        color: rgb(255, 255, 255) !important;
         font-size: 3.5rem;
-        font-weight: 100;
+        font-weight: bold;
         transform: scale(1.5);
       }
       .wrong {
@@ -108,7 +108,7 @@
         <div
           class="container soal-container pt-3 pb-5 mt-5"
           :class="containerClass"
-          style="background-color: rgba(0, 0, 0, 0.75); border-radius: 20px"
+          style="background-color: rgba(0, 0, 0, 0.85); border-radius: 20px"
         >
           <div class="quiz-header">Fun Quiz!</div>
           <div class="question">{{ currentQuestion.text }}</div>
@@ -239,9 +239,10 @@
           },
         },
         mounted() {
-          // Gabungkan soal dari `data.js`
+          // Gabungkan data dari soal dengan questions dan acak soal
           if (typeof soal !== "undefined" && Array.isArray(soal)) {
             this.questions = this.questions.concat(soal);
+            this.questions = this.shuffleArray(this.questions); // Acak soal
           }
           this.loadQuestion();
         },
