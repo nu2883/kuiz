@@ -95,23 +95,50 @@
         display: none;
         z-index: 9999;
       }
-      
+       /* Transisi untuk soal */
+       .question-enter-active, .question-leave-active {
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+      .question-enter, .question-leave-to /* .question-leave-active in <2.1.8 */ {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+
+      /* Transisi untuk pilihan */
+      .options-enter-active, .options-leave-active {
+        transition: opacity 0.5s ease, transform 0.5s ease;
+      }
+      .options-enter, .options-leave-to /* .options-leave-active in <2.1.8 */ {
+        opacity: 0;
+        transform: translateY(50px);
+      }
     </style>
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="container-fluid text-center ">
+        <div style="position: fixed; top: 10px; left: 10px; z-index: 1000; ">
+            <select v-model="selectedSource" @change="loadQuestionsFromSource" class="form-select">
+              <option value="data.js">Default Questions</option>
+              <option value="soalSMA.js">Soal SMA</option>
+              <option value="soalSMP.js">Soal SMP</option>
+            </select>
+          </div>
       <div
-        class="quiz-container"
+        class="quiz-container mx-auto container-fluid"
         :style="{ backgroundImage: currentBackgroundImage }"
       >
       <!-- <audio id="background-audio" src="ticking-clock_1-27477.mp3" loop autoplay></audio> -->
+       <br><br><br>
         <div
           class="container soal-container pt-3 pb-5 mt-5"
           :class="containerClass"
           style="background-color: rgba(0, 0, 0, 0.85); border-radius: 20px"
         >
           <div class="quiz-header">Fun Quiz!</div>
-          <div class="question">{{ currentQuestion.text }}</div>
+        
+          <div class="question ">{{ currentQuestion.text }}</div>
+        
+        <transition name="options">
           <div class="options">
             <button
               class="btn btn-outline-primary"
@@ -124,6 +151,7 @@
               {{ option }}
             </button>
           </div>
+        </transition>
         </div>
         <!-- Audio Controls -->
        
@@ -164,6 +192,9 @@
               "url('kuiz2.png')",
               "url('kuiz3.png')",
               "url('kuiz4.png')",
+              "url('kuiz5.png')",
+              "url('kuiz6.png')",
+              "url('kuiz7.png')",
             ],
             currentBackgroundImage: "url('kuiz1.png')",
             currentQuestionIndex: 0,
@@ -175,6 +206,7 @@
             showFireworks: false,
             correctSound: new Audio("news-ting-6832.mp3"),
             wrongSound: new Audio("wrong.mp3"),
+            selectedSource: "data.js", // Default source
           };
         },
         computed: {
@@ -183,6 +215,29 @@
           },
         },
         methods: {
+            async loadQuestionsFromSource() {
+    try {
+      // Hapus semua soal untuk menghindari duplikasi
+      this.questions = [];
+      
+      // Load file JavaScript eksternal sesuai pilihan
+      const script = await import(`./${this.selectedSource}`);
+      
+      // Ambil soal dari file yang di-load
+      if (Array.isArray(script.default)) {
+        this.questions = script.default;
+        this.questions = this.shuffleArray(this.questions); // Acak soal
+        this.currentQuestionIndex = 0; // Reset ke soal pertama
+        this.loadQuestion(); // Load soal pertama
+      } else {
+        console.error("Format data soal tidak valid.");
+      }
+    } catch (error) {
+      console.error("Gagal memuat data soal:", error);
+    }
+  },
+  // Fungsi lainnya seperti shuffleArray, loadQuestion, selectAnswer
+
           shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
               const j = Math.floor(Math.random() * (i + 1));
@@ -245,6 +300,8 @@
             this.questions = this.shuffleArray(this.questions); // Acak soal
           }
           this.loadQuestion();
+
+          this.loadQuestionsFromSource();
         },
       });
       app.mount("#app");
