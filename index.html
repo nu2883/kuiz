@@ -134,7 +134,7 @@
           :class="containerClass"
           style="background-color: rgba(0, 0, 0, 0.85); border-radius: 20px"
         >
-          <div class="quiz-header">Fun Quiz!</div>
+          <div class="quiz-header" ref="quizHeader" tabindex="0">Fun Quiz!</div>
         
           <div class="question ">{{ currentQuestion.text }}</div>
         
@@ -264,6 +264,12 @@
             } else {
               this.wrongSound.play();
             }
+
+  // Fokus ke "Fun Quiz!" setelah transisi selesai
+  setTimeout(() => {
+        this.$refs.quizHeader.focus();
+      }, 500);
+
             setTimeout(() => {
               this.containerClass = "shrinking";
               setTimeout(() => {
