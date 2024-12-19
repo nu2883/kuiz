@@ -1,5 +1,5 @@
 const soal = [
-    [
+    
         {
           "text": "Jika \(5x - 3 = 17\), maka nilai \(x\) adalah...",
           "options": [
@@ -91,11 +91,10 @@ const soal = [
           ]
         },
         
-      ]
       
 
 
 
-    ]
+    ];
 
     export default soal;
