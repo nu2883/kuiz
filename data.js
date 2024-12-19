@@ -1605,4 +1605,4 @@ const soal = [
       ];
       
   
-  
+      export default soal;
